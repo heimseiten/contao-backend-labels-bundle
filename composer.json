@@ -15,6 +15,16 @@
         "contao/core-bundle": "^5.3",
         "contao/manager-plugin": "^2.0"
     },
+    "require-dev": {
+        "contao/easy-coding-standard": "^1.0"
+    },
+    "conflict": {
+        "contao/core-bundle": "<5.3"
+    },
+    "support": {
+        "issues": "https://github.com/ArturJo/contao-backend-labels-bundle/issues",
+        "source": "https://github.com/ArturJo/contao-backend-labels-bundle"
+    },
     "autoload": {
         "psr-4": {
             "Solidwork\\ContaoBackendLabelsBundle\\": "src/"
