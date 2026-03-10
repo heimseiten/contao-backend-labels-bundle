@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+use Contao\StringUtil;
+
+// Show CSS ID and CSS class in article backend labels
+$GLOBALS['TL_DCA']['tl_article']['list']['label']['label_callback'] = static function (array $row, string $label): string {
+    // Call original core callback
+    $label = (new tl_article())->addIcon($row, $label);
+
+    $parts = [];
+
+    $cssId = StringUtil::deserialize($row['cssID'] ?? '');
+    $cssHtmlId = trim($cssId[0] ?? '');
+    $cssClass  = trim($cssId[1] ?? '');
+
+    if ($cssHtmlId !== '') {
+        $parts[] = 'cssID: <code>' . htmlspecialchars($cssHtmlId) . '</code>';
+    }
+    if ($cssClass !== '') {
+        $parts[] = 'cssClass: <code>' . htmlspecialchars($cssClass) . '</code>';
+    }
+
+    if ($parts !== []) {
+        $label .= ' <span style="opacity:.6"> | ' . implode(' | ', $parts) . '</span>';
+    }
+
+    return $label;
+};
