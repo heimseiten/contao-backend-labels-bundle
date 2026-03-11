@@ -12,6 +12,6 @@ $GLOBALS['TL_DCA']['tl_user_group']['fields']['sldwrk_showBackendLabels'] = [
 ];
 
 PaletteManipulator::create()
-    ->addLegend('backend_labels_legend', 'admin_legend', PaletteManipulator::POSITION_AFTER, true)
+    ->addLegend('backend_labels_legend', 'title_legend', PaletteManipulator::POSITION_AFTER, true)
     ->addField('sldwrk_showBackendLabels', 'backend_labels_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_user_group');
