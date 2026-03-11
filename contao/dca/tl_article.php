@@ -3,11 +3,16 @@
 declare(strict_types=1);
 
 use Contao\StringUtil;
+use Solidwork\ContaoBackendLabelsBundle\Util\BackendLabelPermission;
 
 // Show CSS ID and CSS class in article backend labels
 $GLOBALS['TL_DCA']['tl_article']['list']['label']['label_callback'] = static function (array $row, string $label): string {
     // Call original core callback
     $label = (new tl_article())->addIcon($row, $label);
+
+    if (!BackendLabelPermission::isGranted()) {
+        return $label;
+    }
 
     $parts = [];
 

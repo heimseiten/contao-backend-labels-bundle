@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 use Contao\ContentModel;
 use Contao\StringUtil;
+use Solidwork\ContaoBackendLabelsBundle\Util\BackendLabelPermission;
 
 // Show CSS ID, CSS class and additional info in backend labels for all content elements
 $GLOBALS['TL_DCA']['tl_content']['list']['sorting']['child_record_callback'] = static function (array $row): string {
     $label = (new tl_content())->addCteType($row);
+
+    if (!BackendLabelPermission::isGranted()) {
+        return $label;
+    }
 
     $parts = [];
 
