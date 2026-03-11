@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Solidwork\ContaoBackendLabelsBundle\Util;
 
 use Contao\BackendUser;
-use Contao\Database;
 use Contao\StringUtil;
+use Contao\UserGroupModel;
 
 class BackendLabelPermission
 {
@@ -20,21 +20,30 @@ class BackendLabelPermission
 
         $user = BackendUser::getInstance();
 
-        if ($user->isAdmin) {
+        // $user->admin is the raw DB column value; $user->isAdmin may not be set in Contao 5
+        if ($user->admin) {
             return self::$cache = true;
         }
 
-        $groupIds = array_map('intval', array_filter((array) StringUtil::deserialize($user->groups ?? '', true)));
+        $groupIds = StringUtil::deserialize($user->groups ?? '', true);
+        $groupIds = array_values(array_filter(array_map('intval', (array) $groupIds)));
 
         if ($groupIds === []) {
             return self::$cache = false;
         }
 
-        $placeholders = implode(',', array_fill(0, count($groupIds), '?'));
-        $result = Database::getInstance()
-            ->prepare("SELECT COUNT(*) AS cnt FROM tl_user_group WHERE id IN ({$placeholders}) AND sldwrk_showBackendLabels='1'")
-            ->execute(...$groupIds);
+        $groups = UserGroupModel::findMultipleByIds($groupIds);
 
-        return self::$cache = ($result->cnt > 0);
+        if ($groups === null) {
+            return self::$cache = false;
+        }
+
+        foreach ($groups as $group) {
+            if ($group->sldwrk_showBackendLabels) {
+                return self::$cache = true;
+            }
+        }
+
+        return self::$cache = false;
     }
 }
